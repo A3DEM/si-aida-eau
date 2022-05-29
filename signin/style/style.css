@@ -1,0 +1,94 @@
+body {
+    margin: 0;
+    padding: 0;
+    /* background-color: #eee; */
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    max-height: 100%;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+    color: #071768;
+    font-weight: bold;
+}
+header svg {
+    width: 4%;
+    height: auto;
+    margin: 0px 10px;
+}
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    /* background-color: red; */
+    padding: 20px;
+}
+h1 {
+    color: #071768;
+}
+form > div {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: flex-start;
+    padding:5px;
+}
+form input, form select {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 2px solid gray;
+    transition: 0.25s ease-in-out;
+    width: -webkit-fill-available;
+}
+form select:not(#vaccin, #maladie) {
+    width: auto;
+}
+#connect {
+    display: flex;
+    margin: 10px 5px;
+    font-family: 'Poppins', sans-serif;
+    border: none;
+    background-color: #071768;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+    padding: 15px 20px;
+    font-size: 16px;
+}
+.redstar {
+    color: red;
+}
+.message {
+    text-align: left;
+    width: auto;
+    padding: 10px;
+    margin: 0px 5px 5px 5px;
+    display: none;
+    font-size: 14px;
+}
+.message.active {
+    display: block;
+}
+.message.error {
+    background-color: rgb(255, 164, 164);
+    border-left: 4px solid rgb(184, 0, 0);
+    color: rgb(184, 0, 0);
+}
+.message.valid {
+    background-color: rgb(164, 255, 220);
+    border-left: 4px solid rgb(0, 184, 114);
+    color: rgb(0, 184, 114);
+}
+
+.message.active a {
+    color: #071768;
+    font-weight: bold;
+    transition: 0.3s ease-in-out;
+}

@@ -1,0 +1,108 @@
+body {
+    height: 100vh;
+    margin: 0px;
+    padding: 0;
+    display: flex;
+    font-family: 'Poppins', sans-serif;
+}
+.login {
+    display: flex;
+    /*background-color: aliceblue;*/
+    /* box-shadow: 1px 1px 1px 1px grey; */
+    flex-direction: column;
+    border-radius: 10px;
+    margin: auto;
+}
+.login div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: flex-start;
+    padding:5px;
+}
+.login label {
+    margin-left: 20px;
+    background-color: white;
+    color: gray;
+    transform: translateY(50%);
+    padding: 0px 10px;
+}
+.login input {
+    width: 230px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    border: 2px solid gray;
+    transition: 0.25s ease-in-out;
+}
+.login input:focus, .login input:focus-visible {
+    border: 2px solid #071768;
+}
+#connect {
+    display: flex;
+    width: fit-content;
+    margin: 10px 5px;
+    font-family: 'Poppins', sans-serif;
+    border: none;
+    background-color: #071768;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+    width: 275px;
+    padding: 15px 20px;
+    font-size: 16px;
+}
+.login form {
+    margin: auto;
+}
+.login h1 {
+    font-weight: bold;
+    line-height: 0;
+}
+.login input {
+    font-family: 'Poppins', sans-serif;
+}
+.login a {
+    color: #071768;
+    font-weight: bold;
+}
+
+.message {
+    background-color: rgb(255, 164, 164);
+    border-left: 4px solid rgb(184, 0, 0);
+    color: rgb(184, 0, 0);
+    text-align: left !important;
+    width: auto;
+    padding: 10px;
+    margin: 0px 5px 5px 5px;
+    display: none !important;
+}
+
+.show {
+    display: inherit !important;
+}
+
+@media screen and (min-width:425px) {
+    .login input {
+        width: 300px;
+    }
+
+    #connect {
+        width: 344px;
+    }
+}
+
+.inscription a {
+    font-weight: bold;
+    color: #071768;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.inscription {
+    margin-left: 5px;
+}
+
+h1 {
+    margin-left: 5px;
+}

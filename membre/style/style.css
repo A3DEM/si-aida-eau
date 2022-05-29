@@ -1,0 +1,172 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    max-height: 100%;
+}
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+    color: #071768;
+    font-weight: bold;
+}
+header svg {
+    height: auto;
+    margin: 0px 10px;
+}
+main {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 20px;
+}
+main > div {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 35px #ddd;
+}
+@media screen and (min-width:800px) {
+    main {
+        grid-gap: 20px;
+        grid-template-columns: 4fr 1fr;
+        grid-template-rows: 4fr 1fr;
+    }
+}
+h2 {
+    color: #071768;
+}
+form > div {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: flex-start;
+    padding:5px;
+}
+/* form input:not([type="file"]), form select {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 2px solid gray;
+    transition: 0.25s ease-in-out;
+    width: -webkit-fill-available;
+} */
+form select:not(#vaccin) {
+    width: auto;
+}
+form label {
+    padding: 5px 0px;
+}
+.connect {
+    display: flex;
+    margin: 10px 5px;
+    font-family: 'Poppins', sans-serif;
+    border: none;
+    background-color: #071768;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+    padding: 15px 20px;
+    font-size: 16px;
+}
+.redstar {
+    color: red;
+}
+.message {
+    text-align: left;
+    width: auto;
+    padding: 10px;
+    margin: 0px 5px 5px 5px;
+    display: none;
+    font-size: 14px;
+}
+.message.active {
+    display: block;
+}
+.message.error {
+    background-color: rgb(255, 164, 164);
+    border-left: 4px solid rgb(184, 0, 0);
+    color: rgb(184, 0, 0);
+}
+.message.valid {
+    background-color: rgb(164, 255, 220);
+    border-left: 4px solid rgb(0, 184, 114);
+    color: rgb(0, 184, 114);
+}
+.message.alert {
+    background-color: #dfcdff;
+    border-left: 4px solid #071768;
+    color: #071768;
+}
+.informations {
+    grid-row: span 4;
+}
+.donnees {
+    grid-row: span 1;
+}
+
+header ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 90%;
+}
+
+header li {
+    display: flex;
+    font-weight: bold;
+    font-size: x-large;
+}
+
+header .disconnect svg {
+    background-color: white;
+    height: 80%;
+    padding: 10px;
+    width: auto;
+    margin: 0px;
+    border-radius: 10px;
+    transition: 0.3s ease-in-out;
+}
+
+header .disconnect {
+    border-radius: 10px;
+}
+
+header .disconnect:hover {
+    box-shadow: 0px 0px 20px #071768;
+    cursor: pointer;
+}
+
+.logo svg {
+    width: 10%;
+}
+
+.return {
+    border-radius: 10px;
+    margin-right: 20px;
+    margin-left: auto;
+    width: 49px;
+}
+
+.return a {
+    width: 49px;
+}
+
+.return svg {
+    background-color: white;
+    height: 100%;
+    width: auto;
+    margin: 0px;
+    border-radius: 10px;
+    transition: 0.3s ease-in-out;
+}
+
+header .return:hover {
+    box-shadow: 0px 0px 20px #071768;
+    cursor: pointer;
+}
