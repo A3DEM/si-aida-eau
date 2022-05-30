@@ -1,26 +1,23 @@
 <?php
-session_start();
-if (!isset($_SESSION['connectedId']) || (isset($_GET['specificId']) && $_SESSION['role'] !== 1)) {
-    header("Location: ../index.php");
-    exit();
-}
+if (isset($_POST["Import"])) {
+
+    session_start();
+    if (!isset($_SESSION['connectedId']) || $_SESSION['role'] !== 1) {
+        header("Location: ../index.php");
+        exit();
+    }
 
 
-$id = $_SESSION['connectedId'];
-if (isset($_GET['specificId']) && $_SESSION['role'] === 1) {
-    $id = $_GET['specificId'];
-}
+    $id = $_SESSION['connectedId'];
+    if (isset($_GET['specificId']) && $_SESSION['role'] === 1) {
+        $id = $_GET['specificId'];
+    }
 
-$database = new mysqli("localhost", "root", "", "si_aida_covid");
+    $database = new mysqli("localhost", "root", "", "si_aida_eau");
 
-if ($database->connect_error) {
-    die("Connection failed: " . $database->connect_error);
-}
-
-var_dump($_POST["file"]);
-var_dump($_FILES);
-
-if (isset($_POST["file"])) {
+    if ($database->connect_error) {
+        die("Connection failed: " . $database->connect_error);
+    }
 
     $filename = $_FILES["file"]["tmp_name"];
     if ($_FILES["file"]["size"] > 0) {
@@ -28,7 +25,7 @@ if (isset($_POST["file"])) {
         while (($getData = fgetcsv($file, 10000, ";", ";")) !== FALSE) {
             $sql = "INSERT into quantiteeau (dateConso, jour, lastheureDebut, nbReleve, heureFin, consoInit, consoFinale, idPersonne) 
                    values ('" . $getData[0] . "','" . $getData[1] . "','" . $getData[2] . "','" . $getData[3] . "','" . $getData[4] . "','" . $_GET['specificId'] . ")";
-                   echo $sql;
+            echo $sql;
             $result = $database->query($sql);
             if (!isset($result)) {
                 echo "<script type=\"text/javascript\">

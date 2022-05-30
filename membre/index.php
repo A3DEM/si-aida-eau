@@ -11,36 +11,22 @@ if (isset($_GET['specificId']) && $_SESSION['role'] === 1) {
     $id = $_GET['specificId'];
 }
 
-$database = new mysqli("localhost", "root", "", "si_aida_covid");
+$database = new mysqli("localhost", "root", "", "si_aida_eau");
 
 if ($database->connect_error) {
     die("Connection failed: " . $database->connect_error);
 }
 
-var_dump($_POST["file"]);
-var_dump($_FILES);
-
-if (isset($_POST["file"])) {
+if (isset($_POST["import"])) {
 
     $filename = $_FILES["file"]["tmp_name"];
     if ($_FILES["file"]["size"] > 0) {
         $file = fopen($filename, "r");
         while (($getData = fgetcsv($file, 10000, ";", ";")) !== FALSE) {
-            $sql = "INSERT into quantiteeau (dateConso, jour, lastheureDebut, nbReleve, heureFin, consoInit, consoFinale, idPersonne) 
-                   values ('" . $getData[0] . "','" . $getData[1] . "','" . $getData[2] . "','" . $getData[3] . "','" . $getData[4] . "','" . $_GET['specificId'] . ")";
-                   echo $sql;
+            $sql = "INSERT into quantiteeau (dateConso, jour, heureDebut, nbReleve, heureFin, consoInit, consoFinale, idPersonne) 
+                   values ('" . $getData[0] . "','" . $getData[1] . "','" . $getData[2] . "','" . $getData[3] . "','" . $getData[4] . "','" . $getData[5] . "','" . $getData[6] . "','" . $_GET['specificId'] . "')";
+                   echo $sql . "<br>";
             $result = $database->query($sql);
-            if (!isset($result)) {
-                echo "<script type=\"text/javascript\">
-              alert(\"Invalid File:Please Upload CSV File.\");
-              window.location = \"index.php\"
-              </script>";
-            } else {
-                echo "<script type=\"text/javascript\">
-            alert(\"CSV File has been successfully Imported.\");
-            window.location = \"index.php\"
-          </script>";
-            }
         }
 
         fclose($file);
@@ -99,9 +85,9 @@ header('Content-type: text/html; charset=utf-8');
 
         <div class="donnees">
             <h2>Ajouter des données</h2>
-            <form method="POST" action="../utils/functions.php">
+            <form method="POST" action="<?php $_SERVER['PHP_SELF'] . '?specificId=' . $_GET['specificId'] ?>" name="upload_excel" enctype="multipart/form-data">
                 <input type="file" name="file" id="file">
-                <input type="submit" value="Ajouter les données" class="connect">
+                <input type="submit" name="import" value="Ajouter les données" class="connect">
             </form>
         </div>
     </main>
