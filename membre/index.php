@@ -78,11 +78,10 @@ header('Content-type: text/html; charset=utf-8');
     </header>
 
     <main>
-        <div class="informations">
-            <h2>Vos informations</h2>
-
-            <table>
-                <tr>
+        <div class="informations"> 
+            <h2>Vos informations</h2> 
+            <table> 
+                <tr> 
                     <th>Date de consommation</th>
                     <th>Jour dans la semaine</th>
                     <th>Heure de début</th>
@@ -92,44 +91,164 @@ header('Content-type: text/html; charset=utf-8');
                     <th>Consommaition finale</th>
                     <th>Écart</th>
                 </tr>
-
-            <?php
-            
-                $connectedId = $_SESSION["connectedId"];
-                
-                $requestInformations = $database->prepare("SELECT dateConso, jour, heureDebut, nbReleve, heureFin, consoInit, consoFinale, (consoFinale - consoInit) AS ecart FROM `quantiteeau` WHERE idPersonne = ?");
-                $requestInformations->bind_param('i', $connectedId);
-                $requestInformations->execute();
-                $requestInformations->bind_result($dateConso, $jour, $heureDebut, $nbReleve, $heureFin, $consoInit, $consoFinale, $ecart);
-            
-                while ($requestInformations->fetch()) {
+                <?php
+                    $connectedId = $_SESSION["connectedId"];
 
                     $limiteDebut = (new DateTime("today"))->setTime(0,30,0);
                     $limietFin = (new DateTime("today"))->setTime(23,30,0);
-                    $heureDebut = date_create_from_format("G:i:s", $heureDebut);
-                    $heureFin = date_create_from_format("G:i:s", $heureFin);
 
-                    $diffDebut = $heureDebut < $limiteDebut;
-                    $diffFin = $heureFin > $limietFin;
-                ?>
+                    $previousDate = "";
+                    $nbDate = 1;
 
-                <tr class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>">
-                    <td><?php echo $dateConso; ?></td>
-                    <td><?php echo $jour; ?></td>
-                    <td><?php echo $heureDebut->format('H:i:s'); ?></td>
-                    <td><?php echo $nbReleve; ?></td>
-                    <td><?php echo $heureFin->format('H:i:s'); ?></td>
-                    <td><?php echo $consoInit; ?></td>
-                    <td><?php echo $consoFinale; ?></td>
-                    <td><?php echo $ecart; ?></td>
-                </tr>
+                    $nbLun = 0;
+                    $nbMar = 0;
+                    $nbMer = 0;
+                    $nbJeu = 0;
+                    $nbVen = 0;
+                    $nbSam = 0;
+                    $nbDim = 0;
+
+                    $moyLun = 0;
+                    $moyMar = 0;
+                    $moyMer = 0;
+                    $moyJeu = 0;
+                    $moyVen = 0;
+                    $moySam = 0;
+                    $moyDim = 0;
+
+                    $nbJours = 0;
+                    $nbJoursManquants = 0;
+
+                    $chartLabels = [];
+                    $chartDatas = [];
+
+                    $nbLitres = 0;
+
+                    $requestInformations = $database->prepare("SELECT dateConso, jour, heureDebut, nbReleve, heureFin, consoInit, consoFinale, (consoFinale - consoInit) AS ecart FROM `quantiteeau` WHERE idPersonne = ?");
+                    $requestInformations->bind_param('i', $connectedId);
+                    $requestInformations->execute();
+                    $requestInformations->bind_result($dateConso, $jour, $heureDebut, $nbReleve, $heureFin, $consoInit, $consoFinale, $ecart);
+                    
+                    while ($requestInformations->fetch()) {
+
+                        $nbJours++;
+                        $chartLabels[] = $dateConso;
+                        $chartDatas[] = $ecart;
+                        $nbLitres += $ecart;
+                        
+                        $heureDebut = date_create_from_format("G:i:s", $heureDebut);
+                        $heureFin = date_create_from_format("G:i:s", $heureFin);
+                        $diffDebut = $heureDebut < $limiteDebut; $diffFin = $heureFin > $limietFin;
+                        
+                        // Calculs des moyennes journalières 
+                        
+                        switch ($jour) { 
+                            case 2 : $moyLun+= $ecart; $nbLun++; break;
+                            case 3 : $moyMar+= $ecart; $nbMar++; break;
+                            case 4 : $moyMer+= $ecart; $nbMer++; break;
+                            case 5 : $moyJeu+= $ecart; $nbJeu++; break;
+                            case 6 : $moyVen+= $ecart; $nbVen++; break;
+                            case 7 : $moySam+= $ecart; $nbSam++; break;
+                            case 1 : $moyDim+= $ecart; $nbDim++; break; 
+                        }
+
+                        $currentDate = date_create_from_format("d/m/Y", $dateConso);
+
+                    if ($nbDate > 1) {
+
+                        $previousDateTest = $previousDate->modify("+1 day");
+
+                        if($previousDateTest->format('d/m/Y') !== $currentDate->format('d/m/Y')) {
+
+                            $diffDate = abs($previousDate->format('d/m/Y') - $currentDate->format('d/m/Y'));
+                            $nbJoursManquants += $diffDate;
+
+                            $jour2 = $jour;
+
+                            for ($i = 0; $i < $diffDate; $i++) {
+                                ?>
+
+                                <tr> 
+                                    <td class="missing"><?php echo $previousDate->format('d/m/Y'); ?></td>
+                                    <td class="missing">
+                                        <?php 
+                                            if($jour2 % 8 == 0) {
+                                                echo $jour2 = 1;
+                                                $jour2++;
+                                            } else {
+                                                echo $jour2++ % 8;
+                                            }
+                                        ?>
+                                    </td>
+                                    <td class="missing">0</td> 
+                                    <td class="missing">0</td>
+                                    <td class="missing">0</td> 
+                                    <td class="missing">0</td>
+                                    <td class="missing">0</td>
+                                    <td class="missing">0</td>
+                                </tr>
+
+                                <?php
+                                $previousDate = $previousDate->modify("+1 day");
+                            }
+
+
+                        }
+                    }
+
+                    $nbDate++;
+                    $previousDate = $currentDate;
+                    
+                    ?>
+                    
+                <tr> 
+                    <td class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>"><?php echo $dateConso; ?></td>
+                    <td class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>"><?php echo $jour; ?></td>
+                    <td class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>"><?php echo $heureDebut->format('H:i:s'); ?></td> 
+                    <td class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>"><?php echo $nbReleve; ?></td>
+                    <td class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>"><?php echo $heureFin->format('H:i:s'); ?></td> 
+                    <td class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>"><?php echo $consoInit; ?></td>
+                    <td class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>"><?php echo $consoFinale; ?></td>
+                    <td class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>"><?php echo $ecart; ?></td>
+                </tr> 
+                <?php
+            
+                } ?> 
+            </table> 
+            <h3>Moyennes journalières</h3> 
+            <table> 
+                <tr> 
+                    <th>Lundi</th>
+                    <th>Mardi</th> 
+                    <th>Mercredi</th> 
+                    <th>Jeudi</th> 
+                    <th>Vendredi</th> 
+                    <th>Samedi</th> 
+                    <th>Dimanche</th> 
+                </tr> 
+                <tr> 
+                    <td><?php echo round($moyLun / $nbLun); ?></td> 
+                    <td><?php echo round($moyMar / $nbMar); ?></td> 
+                    <td><?php echo round($moyMer / $nbMer); ?></td> 
+                    <td><?php echo round($moyJeu / $nbJeu); ?></td> 
+                    <td><?php echo round($moyVen / $nbVen); ?></td> 
+                    <td><?php echo round($moySam / $nbSam); ?></td> 
+                    <td><?php echo round($moyDim / $nbDim); ?></td> 
+                </tr> 
+            </table>
+            <h3>Pourcentage de jours manquants</h3>
 
             <?php
-                }
+                $percentage = round($nbJoursManquants / ($nbJours + $nbJoursManquants) * 100, 2);
             ?>
-
-            </table>
-
+            <h4><?php echo $percentage." %"; ?></h4>
+            <h3>Graphique de consommation complète</h3>
+            <canvas id="myChart" style="position: relative; height:40vh; width:80vw"></canvas>
+            <h3>Facture</h3>
+            <h4><?php echo $nbLitres* 0.00345; ?> €</h4>
+            <?php
+                require("facture.php");
+            ?>
         </div>
 
         <div class="donnees">
@@ -141,6 +260,30 @@ header('Content-type: text/html; charset=utf-8');
         </div>
     </main>
     <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: <?php echo json_encode($chartLabels); ?>,
+                datasets: [{
+                    label: 'Consommation d\'eau',
+                    data: <?php echo json_encode($chartDatas); ?>,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.35                    
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>
