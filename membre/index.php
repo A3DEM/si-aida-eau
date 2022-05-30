@@ -81,6 +81,55 @@ header('Content-type: text/html; charset=utf-8');
         <div class="informations">
             <h2>Vos informations</h2>
 
+            <table>
+                <tr>
+                    <th>Date de consommation</th>
+                    <th>Jour dans la semaine</th>
+                    <th>Heure de début</th>
+                    <th>Nombre de relevés</th>
+                    <th>Heure de fin</th>
+                    <th>Consommaition initiale</th>
+                    <th>Consommaition finale</th>
+                    <th>Écart</th>
+                </tr>
+
+            <?php
+            
+                $connectedId = $_SESSION["connectedId"];
+                
+                $requestInformations = $database->prepare("SELECT dateConso, jour, heureDebut, nbReleve, heureFin, consoInit, consoFinale, (consoFinale - consoInit) AS ecart FROM `quantiteeau` WHERE idPersonne = ?");
+                $requestInformations->bind_param('i', $connectedId);
+                $requestInformations->execute();
+                $requestInformations->bind_result($dateConso, $jour, $heureDebut, $nbReleve, $heureFin, $consoInit, $consoFinale, $ecart);
+            
+                while ($requestInformations->fetch()) {
+
+                    $limiteDebut = (new DateTime("today"))->setTime(0,30,0);
+                    $limietFin = (new DateTime("today"))->setTime(23,30,0);
+                    $heureDebut = date_create_from_format("G:i:s", $heureDebut);
+                    $heureFin = date_create_from_format("G:i:s", $heureFin);
+
+                    $diffDebut = $heureDebut < $limiteDebut;
+                    $diffFin = $heureFin > $limietFin;
+                ?>
+
+                <tr class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>">
+                    <td><?php echo $dateConso; ?></td>
+                    <td><?php echo $jour; ?></td>
+                    <td><?php echo $heureDebut->format('H:i:s'); ?></td>
+                    <td><?php echo $nbReleve; ?></td>
+                    <td><?php echo $heureFin->format('H:i:s'); ?></td>
+                    <td><?php echo $consoInit; ?></td>
+                    <td><?php echo $consoFinale; ?></td>
+                    <td><?php echo $ecart; ?></td>
+                </tr>
+
+            <?php
+                }
+            ?>
+
+            </table>
+
         </div>
 
         <div class="donnees">
