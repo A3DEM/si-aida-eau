@@ -78,11 +78,10 @@ header('Content-type: text/html; charset=utf-8');
     </header>
 
     <main>
-        <div class="informations">
-            <h2>Vos informations</h2>
-
-            <table>
-                <tr>
+        <div class="informations"> 
+            <h2>Vos informations</h2> 
+            <table> 
+                <tr> 
                     <th>Date de consommation</th>
                     <th>Jour dans la semaine</th>
                     <th>Heure de début</th>
@@ -92,44 +91,76 @@ header('Content-type: text/html; charset=utf-8');
                     <th>Consommaition finale</th>
                     <th>Écart</th>
                 </tr>
-
-            <?php
-            
-                $connectedId = $_SESSION["connectedId"];
-                
-                $requestInformations = $database->prepare("SELECT dateConso, jour, heureDebut, nbReleve, heureFin, consoInit, consoFinale, (consoFinale - consoInit) AS ecart FROM `quantiteeau` WHERE idPersonne = ?");
-                $requestInformations->bind_param('i', $connectedId);
-                $requestInformations->execute();
-                $requestInformations->bind_result($dateConso, $jour, $heureDebut, $nbReleve, $heureFin, $consoInit, $consoFinale, $ecart);
-            
-                while ($requestInformations->fetch()) {
-
+                <?php
+                    $connectedId = $_SESSION["connectedId"];
                     $limiteDebut = (new DateTime("today"))->setTime(0,30,0);
                     $limietFin = (new DateTime("today"))->setTime(23,30,0);
-                    $heureDebut = date_create_from_format("G:i:s", $heureDebut);
-                    $heureFin = date_create_from_format("G:i:s", $heureFin);
+                    $nbLun = 0;
+                    $nbMar = 0;
+                    $nbMer = 0;
+                    $nbJeu = 0;
+                    $nbVen = 0;
+                    $nbSam = 0;
+                    $nbDim = 0;
 
-                    $diffDebut = $heureDebut < $limiteDebut;
-                    $diffFin = $heureFin > $limietFin;
-                ?>
+                    $moyLun = 0;
+                    $moyMar = 0;
+                    $moyMer = 0;
+                    $moyJeu = 0;
+                    $moyVen = 0;
+                    $moySam = 0;
+                    $moyDim = 0;
 
-                <tr class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>">
+                    $requestInformations = $database->prepare("SELECT dateConso, jour, heureDebut, nbReleve, heureFin, consoInit, consoFinale, (consoFinale - consoInit) AS ecart FROM `quantiteeau` WHERE idPersonne = ?");
+                    $requestInformations->bind_param('i', $connectedId);
+                    $requestInformations->execute();
+                    $requestInformations->bind_result($dateConso, $jour, $heureDebut, $nbReleve, $heureFin, $consoInit, $consoFinale, $ecart);
+                    
+                    while ($requestInformations->fetch()) {
+                        $heureDebut = date_create_from_format("G:i:s", $heureDebut);
+                        $heureFin = date_create_from_format("G:i:s", $heureFin);
+                        $diffDebut = $heureDebut < $limiteDebut; $diffFin = $heureFin > $limietFin;
+                        
+                        // Calculs des moyennes journalières 
+                        
+                        switch ($jour) { 
+                            case 2 : $moyLun+= $ecart; $nbLun++; break; case 3 : $moyMar+= $ecart; $nbMar++; break; case 4 : $moyMer+= $ecart; $nbMer++; break; case 5 : $moyJeu+= $ecart; $nbJeu++; break; case 6 : $moyVen+= $ecart; $nbVen++; break; case 7 : $moySam+= $ecart; $nbSam++; break; case 1 : $moyDim+= $ecart; $nbDim++; break; 
+                        } 
+                    ?>
+                    
+                    <tr class="<?php if(!$diffDebut || !$diffFin) {echo "alert";} ?>"> 
                     <td><?php echo $dateConso; ?></td>
                     <td><?php echo $jour; ?></td>
-                    <td><?php echo $heureDebut->format('H:i:s'); ?></td>
+                    <td><?php echo $heureDebut->format('H:i:s'); ?></td> 
                     <td><?php echo $nbReleve; ?></td>
-                    <td><?php echo $heureFin->format('H:i:s'); ?></td>
+                    <td><?php echo $heureFin->format('H:i:s'); ?></td> 
                     <td><?php echo $consoInit; ?></td>
                     <td><?php echo $consoFinale; ?></td>
                     <td><?php echo $ecart; ?></td>
-                </tr>
-
-            <?php
-                }
-            ?>
-
-            </table>
-
+                </tr> 
+                <?php } ?> 
+            </table> 
+            <h3>Moyennes journalières</h3> 
+            <table> 
+                <tr> 
+                    <th>Lundi</th>
+                    <th>Mardi</th> 
+                    <th>Mercredi</th> 
+                    <th>Jeudi</th> 
+                    <th>Vendredi</th> 
+                    <th>Samedi</th> 
+                    <th>Dimanche</th> 
+                </tr> 
+                <tr> 
+                    <td><?php echo round($moyLun / $nbLun); ?></td> 
+                    <td><?php echo round($moyMar / $nbMar); ?></td> 
+                    <td><?php echo round($moyMer / $nbMer); ?></td> 
+                    <td><?php echo round($moyJeu / $nbJeu); ?></td> 
+                    <td><?php echo round($moyVen / $nbVen); ?></td> 
+                    <td><?php echo round($moySam / $nbSam); ?></td> 
+                    <td><?php echo round($moyDim / $nbDim); ?></td> 
+                </tr> 
+            </table> 
         </div>
 
         <div class="donnees">
