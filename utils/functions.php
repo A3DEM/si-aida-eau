@@ -11,7 +11,7 @@ if (isset($_GET['specificId']) && $_SESSION['role'] === 1) {
     $id = $_GET['specificId'];
 }
 
-$database = new mysqli("localhost", "root", "", "si_aida_covid");
+$database = new mysqli("localhost", "root", "", "si_aida_eau");
 
 if ($database->connect_error) {
     die("Connection failed: " . $database->connect_error);

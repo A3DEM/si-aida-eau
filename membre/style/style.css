@@ -170,3 +170,13 @@ header .return:hover {
     box-shadow: 0px 0px 20px #071768;
     cursor: pointer;
 }
+table, th, td {
+    border: 1px solid black;
+}
+th {
+    padding: 10px;
+}
+.alert {
+    background-color: red;
+    color: white;
+}
