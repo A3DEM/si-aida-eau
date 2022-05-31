@@ -176,7 +176,13 @@ table, th, td {
 th {
     padding: 10px;
 }
-.alert {
-    background-color: red;
+td {
+    background-color: rgb(46, 168, 128);
     color: white;
+}
+.alert {
+    background-color: rgb(209, 88, 58);
+}
+.missing {
+    background-color: rgb(209, 194, 58);
 }
