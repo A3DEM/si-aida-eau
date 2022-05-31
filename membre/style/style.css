@@ -105,6 +105,7 @@ form label {
 }
 .donnees {
     grid-row: span 1;
+    max-height: 200px;
 }
 
 header ul {

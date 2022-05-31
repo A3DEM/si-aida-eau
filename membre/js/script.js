@@ -15,3 +15,4 @@ async function disconnect() {
         console.log(e)
     }
 }
+console.log("ok")
